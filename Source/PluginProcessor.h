@@ -12,6 +12,7 @@
 #define PLUGINPROCESSOR_H_INCLUDED
 
 #include "mooSynth.h"
+#include "voices.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 
 //==============================================================================
@@ -60,6 +61,8 @@ public:
 private:
     //==============================================================================
     mooSynth synth[1];
+    
+    MooVoice voice;
     
     float* audioBuffer[2]; // multichannel audio buffer used both for input and output
     MapUI synthControl;

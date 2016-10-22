@@ -11,7 +11,7 @@
 #ifndef VOICES_H_INCLUDED
 #define VOICES_H_INCLUDED
 #include "../JuceLibraryCode/JuceHeader.h"
-
+#include "mooSynth.h"
 
 struct MooSound : public SynthesiserSound
 {
@@ -22,7 +22,36 @@ struct MooSound : public SynthesiserSound
 };
 
 
-
+struct MooVoice : public SynthesiserVoice
+{
+    bool canPlaySound(SynthesiserSound* sound) override
+    {
+        return dynamic_cast<MooSound*> (sound) != nullptr;
+    }
+    
+    void startNote(int midiNoteNumber, float velocity, SynthesiserSound*, int /* pitchwheel */) override
+    {
+        
+    }
+    void stopNote (float/*velocity*/, bool allowTailOff) override
+    
+    {
+    }
+    void pitchWheelMoved (int /*newValues*/) override
+    {
+    }
+    void controllerMoved (int /*controllerNumber*/, int /*newValue*/) override
+    {
+    }
+    
+    void renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample, int numSamples) override
+    {
+    }
+    
+private:
+    mooSynth moo;
+    
+};
 
 
 #endif  // VOICES_H_INCLUDED

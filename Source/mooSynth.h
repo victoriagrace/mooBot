@@ -647,6 +647,9 @@ class decorator_dsp : public dsp {
 
 #endif
 
+#ifndef __mooSynth__
+#define __mooSynth__
+
 // tags used by the Faust compiler to paste the generated c++ code
 #ifndef FAUSTFLOAT
 #define FAUSTFLOAT float
@@ -734,7 +737,7 @@ class mooSynth : public dsp {
 			float fTemp2 = (fTemp1 + -1);
 			int iTemp3 = int((fTemp2 < 0));
 			fRec0[0] = ((iTemp3)?fTemp1:fTemp2);
-			float 	fRec1 = ((iTemp3)?fTemp1:(fTemp1 + ((1 - (fConst0 / fTemp0)) * fTemp2)));
+			float 	fRec1 = ((iTemp3)?fTemp1:(fTemp1 + (fTemp2 * (1 - (fConst0 / fTemp0)))));
 			fRec3[0] = (fSlow1 + (0.999f * fRec3[1]));
 			float fTemp4 = (((2 * fRec1) + -1) * fRec3[0]);
 			output0[i] = (FAUSTFLOAT)fTemp4;
@@ -748,3 +751,4 @@ class mooSynth : public dsp {
 };
 
 
+#endif
