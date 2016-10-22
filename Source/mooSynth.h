@@ -664,6 +664,8 @@ class mooSynth : public dsp {
 	FAUSTFLOAT 	fentry0;
 	float 	fRec2[2];
 	float 	fRec0[2];
+	FAUSTFLOAT 	fentry1;
+	float 	fRec3[2];
 	int fSamplingFreq;
 
   public:
@@ -692,10 +694,12 @@ class mooSynth : public dsp {
 	}
 	virtual void instanceResetUserInterface() {
 		fentry0 = 24.0f;
+		fentry1 = 0.5f;
 	}
 	virtual void instanceClear() {
 		for (int i=0; i<2; i++) fRec2[i] = 0;
 		for (int i=0; i<2; i++) fRec0[i] = 0;
+		for (int i=0; i<2; i++) fRec3[i] = 0;
 	}
 	virtual void init(int samplingFreq) {
 		classInit(samplingFreq);
@@ -715,10 +719,12 @@ class mooSynth : public dsp {
 	virtual void buildUserInterface(UI* ui_interface) {
 		ui_interface->openHorizontalBox("main");
 		ui_interface->addNumEntry("freq", &fentry0, 24.0f, 0.0f, 127.0f, 0.01f);
+		ui_interface->addNumEntry("vel", &fentry1, 0.5f, 0.0f, 1.0f, 0.01f);
 		ui_interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
 		float 	fSlow0 = (0.001f * float(fentry0));
+		float 	fSlow1 = (0.001f * float(fentry1));
 		FAUSTFLOAT* output0 = output[0];
 		FAUSTFLOAT* output1 = output[1];
 		for (int i=0; i<count; i++) {
@@ -729,10 +735,12 @@ class mooSynth : public dsp {
 			int iTemp3 = int((fTemp2 < 0));
 			fRec0[0] = ((iTemp3)?fTemp1:fTemp2);
 			float 	fRec1 = ((iTemp3)?fTemp1:(fTemp1 + ((1 - (fConst0 / fTemp0)) * fTemp2)));
-			float fTemp4 = ((2 * fRec1) + -1);
+			fRec3[0] = (fSlow1 + (0.999f * fRec3[1]));
+			float fTemp4 = (((2 * fRec1) + -1) * fRec3[0]);
 			output0[i] = (FAUSTFLOAT)fTemp4;
 			output1[i] = (FAUSTFLOAT)fTemp4;
 			// post processing
+			fRec3[1] = fRec3[0];
 			fRec0[1] = fRec0[0];
 			fRec2[1] = fRec2[0];
 		}

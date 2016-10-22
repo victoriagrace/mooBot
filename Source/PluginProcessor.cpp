@@ -22,6 +22,7 @@ MoobotAudioProcessor::~MoobotAudioProcessor()
 }
 
 //==============================================================================
+
 const String MoobotAudioProcessor::getName() const
 {
     return JucePlugin_Name;
@@ -81,6 +82,7 @@ void MoobotAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock
     synth[0].buildUserInterface(&synthControl);
     
     synthControl.setParamValue("/main/freq",32);
+    synthControl.setParamValue("/main/vel", .5);
 }
 
 void MoobotAudioProcessor::releaseResources()
@@ -137,10 +139,21 @@ void MoobotAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& 
     int time;
     MidiMessage m;
     
+    
     for (MidiBuffer::Iterator i (midiMessages); i.getNextEvent(m, time);)
     {
         if (m.isNoteOn()) {
+            uint8 newVel = m.getVelocity();
+            float velF = (float)newVel/127.f;
+            
             synthControl.setParamValue("/main/freq",m.getNoteNumber());
+            synthControl.setParamValue("/main/vel",velF);
+
+            
+        }
+        else if (m.isNoteOff())
+        {
+            synthControl.setParamValue("/main/vel",0.f);
 
         }
     }
