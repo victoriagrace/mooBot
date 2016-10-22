@@ -14,6 +14,10 @@
 // needed by any Faust arch file
 #include "faust/dsp/dsp.h"
 
+#ifndef __mydsp__
+#define __mydsp__
+
 // tags used by the Faust compiler to paste the generated c++ code
 <<includeIntrinsic>>
 <<includeclass>>
+#endif
