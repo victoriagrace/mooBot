@@ -13,6 +13,10 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "mooSynth.h"
 
+#ifndef FAUSTFLOAT
+#define FAUSTFLOAT float
+#endif
+
 struct MooSound : public SynthesiserSound
 {
     MooSound() {}
@@ -34,7 +38,6 @@ struct MooVoice : public SynthesiserVoice
         
     }
     void stopNote (float/*velocity*/, bool allowTailOff) override
-    
     {
     }
     void pitchWheelMoved (int /*newValues*/) override
@@ -47,10 +50,13 @@ struct MooVoice : public SynthesiserVoice
     void renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample, int numSamples) override
     {
     }
+    void init(double samplingRate);
+    void compute(int count, FAUSTFLOAT **in, FAUSTFLOAT **out);
+    
     
 private:
-    mooSynth moo;
-    
+    mooSynth faustSynth;
+    MapUI synthControl;
 };
 
 

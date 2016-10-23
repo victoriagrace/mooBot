@@ -60,12 +60,10 @@ public:
     float noteOnVel;
 private:
     //==============================================================================
-    mooSynth synth[1];
     
     MooVoice voice;
     
     float* audioBuffer[2]; // multichannel audio buffer used both for input and output
-    MapUI synthControl;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MoobotAudioProcessor)
     
 };
