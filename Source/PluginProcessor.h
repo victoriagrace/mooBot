@@ -61,8 +61,7 @@ public:
 private:
     //==============================================================================
     
-    MooVoice voice;
-    
+    Synthesiser synth;
     float* audioBuffer[2]; // multichannel audio buffer used both for input and output
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MoobotAudioProcessor)
     

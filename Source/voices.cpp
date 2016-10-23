@@ -25,3 +25,17 @@ void MooVoice::compute(int count, FAUSTFLOAT **in, FAUSTFLOAT **out)
 {
     faustSynth.compute(count, in, out);
 }
+
+void MooVoice::setCurrentPlaybackSampleRate(double newRate)
+{
+    init(newRate);
+}
+
+void MooVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample, int numSamples)
+{
+    /* we want this to work */
+    compute(numSamples, NULL, audiobuffer);
+}
+
+
+

@@ -15,6 +15,14 @@
 //==============================================================================
 MoobotAudioProcessor::MoobotAudioProcessor()
 {
+    int nVoices = 4;
+    for (int i = nVoices; --i >= 0;)
+    {
+        synth.addVoice (new MooVoice());
+    }
+    
+    synth.clearSounds();
+    synth.addSound (new MooSound());
 }
 
 MoobotAudioProcessor::~MoobotAudioProcessor()
@@ -78,7 +86,8 @@ void MoobotAudioProcessor::changeProgramName (int index, const String& newName)
 //==============================================================================
 void MoobotAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    voice.init(sampleRate);
+    
+    synth.setCurrentPlaybackSampleRate(sampleRate);
 }
 
 void MoobotAudioProcessor::releaseResources()
@@ -112,7 +121,7 @@ bool MoobotAudioProcessor::setPreferredBusArrangement (bool isInput, int bus, co
 }
 #endif
 
-void MoobotAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)
+void MoobotAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages) // can be compared with getNextAudioBlock
 {
     const int totalNumInputChannels  = getTotalNumInputChannels();
     const int totalNumOutputChannels = getTotalNumOutputChannels();
@@ -121,7 +130,7 @@ void MoobotAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& 
         buffer.clear (i, 0, buffer.getNumSamples());
 
     
-    int numSamples = buffer.getNumSamples ();
+    //int numSamples = buffer.getNumSamples ();
     
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
@@ -132,7 +141,7 @@ void MoobotAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& 
     audioBuffer[1] = buffer.getWritePointer(1);
 
     MidiBuffer processedMidi;
-    int time;
+   // int time;
     MidiMessage m;
     
 //    
@@ -155,7 +164,9 @@ void MoobotAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& 
 //    }
 //    synth[0].compute(numSamples, NULL, audioBuffer);
 //    
-    voice.compute(numSamples, NULL, audioBuffer);
+    //voice.compute(numSamples, NULL, audioBuffer);
+    synth.renderNextBlock (buffer, midiMessages, 0, buffer.getNumSamples());
+
 }
 
 //==============================================================================

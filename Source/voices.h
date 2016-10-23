@@ -35,23 +35,27 @@ struct MooVoice : public SynthesiserVoice
     
     void startNote(int midiNoteNumber, float velocity, SynthesiserSound*, int /* pitchwheel */) override
     {
-        
+        synthControl.setParamValue("/main/freq",midiNoteNumber);
     }
     void stopNote (float/*velocity*/, bool allowTailOff) override
     {
+        synthControl.setParamValue("/main/vel",0.f);
+
     }
     void pitchWheelMoved (int /*newValues*/) override
     {
     }
+    
     void controllerMoved (int /*controllerNumber*/, int /*newValue*/) override
     {
     }
     
-    void renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample, int numSamples) override
-    {
-    }
+    void renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample, int numSamples) override;
+    
     void init(double samplingRate);
     void compute(int count, FAUSTFLOAT **in, FAUSTFLOAT **out);
+    void setCurrentPlaybackSampleRate(double newRate) override;
+
     
     
 private:
