@@ -673,8 +673,6 @@ class mooSynth : public dsp {
 
   public:
 	virtual void metadata(Meta* m) { 
-		m->declare("miscoscillator.lib/name", "Faust Oscillator Library");
-		m->declare("miscoscillator.lib/version", "0.0");
 		m->declare("basic.lib/name", "Faust Basic Element Library");
 		m->declare("basic.lib/version", "0.0");
 		m->declare("signal.lib/name", "Faust Signal Routing Library");
@@ -684,9 +682,11 @@ class mooSynth : public dsp {
 		m->declare("math.lib/author", "GRAME");
 		m->declare("math.lib/copyright", "GRAME");
 		m->declare("math.lib/license", "LGPL with exception");
+		m->declare("miscoscillator.lib/name", "Faust Oscillator Library");
+		m->declare("miscoscillator.lib/version", "0.0");
 	}
 
-	virtual int getNumInputs() { return 0; }
+	virtual int getNumInputs() { return 2; }
 	virtual int getNumOutputs() { return 2; }
 	static void classInit(int samplingFreq) {
 	}
@@ -728,6 +728,8 @@ class mooSynth : public dsp {
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
 		float 	fSlow0 = (0.001f * float(fentry0));
 		float 	fSlow1 = (0.001f * float(fentry1));
+		FAUSTFLOAT* input0 = input[0];
+		FAUSTFLOAT* input1 = input[1];
 		FAUSTFLOAT* output0 = output[0];
 		FAUSTFLOAT* output1 = output[1];
 		for (int i=0; i<count; i++) {
@@ -740,8 +742,8 @@ class mooSynth : public dsp {
 			float 	fRec1 = ((iTemp3)?fTemp1:(fTemp1 + (fTemp2 * (1 - (fConst0 / fTemp0)))));
 			fRec3[0] = (fSlow1 + (0.999f * fRec3[1]));
 			float fTemp4 = (((2 * fRec1) + -1) * fRec3[0]);
-			output0[i] = (FAUSTFLOAT)fTemp4;
-			output1[i] = (FAUSTFLOAT)fTemp4;
+			output0[i] = (FAUSTFLOAT)((float)input0[i] + fTemp4);
+			output1[i] = (FAUSTFLOAT)((float)input1[i] + fTemp4);
 			// post processing
 			fRec3[1] = fRec3[0];
 			fRec0[1] = fRec0[0];

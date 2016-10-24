@@ -16,7 +16,7 @@ void MooVoice::init(double samplingRate)
     faustSynth.buildUserInterface(&synthControl);
     
     synthControl.setParamValue("/main/freq",32);
-    synthControl.setParamValue("/main/vel", .5);
+    synthControl.setParamValue("/main/vel", 0);
     
     
 }
@@ -37,7 +37,7 @@ void MooVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
     audioBuffer[0] = outputBuffer.getWritePointer(0);
     audioBuffer[1] = outputBuffer.getWritePointer(1);
 
-    compute(numSamples, NULL, audioBuffer);
+    compute(numSamples, audioBuffer, audioBuffer);
 }
 
 
