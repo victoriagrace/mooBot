@@ -137,8 +137,8 @@ void MoobotAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& 
 
         // ..do something to the data...
     }
-    audioBuffer[0] = buffer.getWritePointer(0);
-    audioBuffer[1] = buffer.getWritePointer(1);
+//    audioBuffer[0] = buffer.getWritePointer(0);
+//    audioBuffer[1] = buffer.getWritePointer(1);
 
     MidiBuffer processedMidi;
    // int time;

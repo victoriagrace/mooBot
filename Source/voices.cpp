@@ -34,7 +34,10 @@ void MooVoice::setCurrentPlaybackSampleRate(double newRate)
 void MooVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample, int numSamples)
 {
     /* we want this to work */
-    compute(numSamples, NULL, audiobuffer);
+    audioBuffer[0] = outputBuffer.getWritePointer(0);
+    audioBuffer[1] = outputBuffer.getWritePointer(1);
+
+    compute(numSamples, NULL, audioBuffer);
 }
 
 

@@ -36,6 +36,7 @@ struct MooVoice : public SynthesiserVoice
     void startNote(int midiNoteNumber, float velocity, SynthesiserSound*, int /* pitchwheel */) override
     {
         synthControl.setParamValue("/main/freq",midiNoteNumber);
+        synthControl.setParamValue("/main/vel",velocity);
     }
     void stopNote (float/*velocity*/, bool allowTailOff) override
     {
@@ -61,6 +62,7 @@ struct MooVoice : public SynthesiserVoice
 private:
     mooSynth faustSynth;
     MapUI synthControl;
+    float *audioBuffer[2];
 };
 
 
