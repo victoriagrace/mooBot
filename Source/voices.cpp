@@ -38,6 +38,7 @@ void MooVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
     audioBuffer[1] = outputBuffer.getWritePointer(1);
 
     compute(numSamples, audioBuffer, audioBuffer);
+    
 }
 
 

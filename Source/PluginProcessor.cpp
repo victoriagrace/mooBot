@@ -165,6 +165,7 @@ void MoobotAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& 
 //    synth[0].compute(numSamples, NULL, audioBuffer);
 //    
     //voice.compute(numSamples, NULL, audioBuffer);
+    
     synth.renderNextBlock (buffer, midiMessages, 0, buffer.getNumSamples());
 
 }
