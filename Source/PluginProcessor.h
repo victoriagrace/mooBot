@@ -15,6 +15,11 @@
 #include "voices.h"
 #include "../JuceLibraryCode/JuceHeader.h"
 
+
+extern "C" {
+#include "soundpipe.h"
+}
+
 //==============================================================================
 /**
 */
@@ -57,8 +62,10 @@ public:
     void getStateInformation (MemoryBlock& destData) override;
     void setStateInformation (const void* data, int sizeInBytes) override;
     
+    void setReverbDecay(float decay);
+    
     float noteOnVel;
-    MooVoice voice[MOO_MAXVOICES];
+    MooVoice *voice[MOO_MAXVOICES];
 
 private:
     //==============================================================================
@@ -67,7 +74,9 @@ private:
     float* audioBuffer[2]; // multichannel audio buffer used both for input and output
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MoobotAudioProcessor)
     MapUI synthControl;
-
+    sp_data *sp;
+    sp_revsc *reverb;
+    
 };
 
 

@@ -26,7 +26,7 @@ MoobotAudioProcessorEditor::MoobotAudioProcessorEditor (MoobotAudioProcessor& p)
     slider4->addListener (this);
     
     addAndMakeVisible (slider1 = new Slider ("slider1"));
-    slider1->setRange (10, 10000, 0);
+    slider1->setRange (0, 12);
     slider1->setSliderStyle (Slider::LinearBar);
     slider1->setTextBoxStyle (Slider::TextBoxLeft, false, 80, 20);
     slider1->setColour (Slider::backgroundColourId, Colour (0xff000097));
@@ -34,7 +34,7 @@ MoobotAudioProcessorEditor::MoobotAudioProcessorEditor (MoobotAudioProcessor& p)
     slider1->addListener (this);
     
     addAndMakeVisible (slider5 = new Slider ("slider5"));
-    slider5->setRange (0, 10, 0);
+    slider5->setRange (0, 1);
     slider5->setSliderStyle (Slider::LinearBar);
     slider5->setTextBoxStyle (Slider::TextBoxLeft, false, 80, 20);
     slider5->setColour (Slider::backgroundColourId, Colour (0xff000097));
@@ -42,7 +42,7 @@ MoobotAudioProcessorEditor::MoobotAudioProcessorEditor (MoobotAudioProcessor& p)
     slider5->addListener (this);
     
     addAndMakeVisible (slider2 = new Slider ("slider2"));
-    slider2->setRange (0, 10, 0);
+    slider2->setRange (0.001, 1);
     slider2->setSliderStyle (Slider::LinearBarVertical);
     slider2->setTextBoxStyle (Slider::TextBoxLeft, false, 80, 20);
     slider2->setColour (Slider::backgroundColourId, Colour (0xff000097));
@@ -50,7 +50,7 @@ MoobotAudioProcessorEditor::MoobotAudioProcessorEditor (MoobotAudioProcessor& p)
     slider2->addListener (this);
     
     addAndMakeVisible (slider3 = new Slider ("slider3"));
-    slider3->setRange (0, 10, 0);
+    slider3->setRange (0.001, 1);
     slider3->setSliderStyle (Slider::LinearBarVertical);
     slider3->setTextBoxStyle (Slider::TextBoxLeft, false, 80, 20);
     slider3->setColour (Slider::backgroundColourId, Colour (0xff000097));
@@ -242,30 +242,36 @@ void MoobotAudioProcessorEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == slider4)
     {
         //[UserSliderCode_slider4] -- add your slider handling code here..
-        synthControl.setParamValue("/main/formant", slider4->getValue());
+       // synthControl.setParamValue("/main/formant", slider4->getValue());
+        for(int v = 0; v < MOO_MAXVOICES; v++) {
+            processor.voice[v]->setFormant(slider4->getValue());
+        }
     }
     else if (sliderThatWasMoved == slider1)
     {
         //[UserSliderCode_slider1] -- add your slider handling code here..
         //[/UserSliderCode_slider1]
         for(int v = 0; v < MOO_MAXVOICES; v++) {
-            processor.voice[v].setCutoff(slider1->getValue());
+            processor.voice[v]->setVib(slider1->getValue());
         }
     }
     else if (sliderThatWasMoved == slider5)
     {
+        processor.setReverbDecay(slider5->getValue());
         //[UserSliderCode_slider5] -- add your slider handling code here..
         //[/UserSliderCode_slider5]
     }
     else if (sliderThatWasMoved == slider2)
     {
-        //[UserSliderCode_slider2] -- add your slider handling code here..
-        //[/UserSliderCode_slider2]
+        for(int v = 0; v < MOO_MAXVOICES; v++) {
+            processor.voice[v]->setEnv(slider2->getValue());
+        }
     }
     else if (sliderThatWasMoved == slider3)
     {
-        //[UserSliderCode_slider3] -- add your slider handling code here..
-        //[/UserSliderCode_slider3]
+        for(int v = 0; v < MOO_MAXVOICES; v++) {
+            processor.voice[v]->setSpeed(slider3->getValue());
+        }
     }
     
     //[UsersliderValueChanged_Post]

@@ -10,6 +10,7 @@
 
 #include "voices.h"
 
+
 void MooVoice::init(double samplingRate)
 {
     faustSynth.init(samplingRate);
@@ -87,10 +88,52 @@ void MooVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
 
 }
 
-void MooVoice::setCutoff(float cutoff)
+void MooVoice::setVib(float vib)
 {
-    synthControl.setParamValue("/main/cutoff",cutoff);
+    synthControl.setParamValue("/main/vib",vib);
+}
+
+void MooVoice::setFormant(float formant)
+{
+    synthControl.setParamValue("/main/formant",formant);
+}
+void MooVoice::setSpeed(float speed)
+{
+    synthControl.setParamValue("/main/wowspeed",speed);
+}
+
+void MooVoice::setEnv(float env)
+{
+    synthControl.setParamValue("/main/envAmp",env);
 }
 
 
+void MooVoice::startNote(int midiNoteNumber, float velocity, SynthesiserSound*, int /* pitchwheel */)
+{
+    synthControl.setParamValue("/main/gate",1);
+    synthControl.setParamValue("/main/freq",midiNoteNumber);
+    synthControl.setParamValue("/main/vel",velocity);
+    isOn = true;
+    timer = 44100;
+    std::cout << "We are turning shit on!\n";
+    isOn = true;
+    isRelease = false;
+    mode = 1;
+    
+}
+    
+void MooVoice::stopNote (float/*velocity*/, bool allowTailOff)
+{
+    if(!allowTailOff) {
+        return;
+    }
+    synthControl.setParamValue("/main/gate",0.0);
+    //synthControl.setParamValue("/main/vel",0.f);
+    std::cout << "We are turning shit off!\n";
+    //clearCurrentNote();
+    isOn = false;
+    timer = 44100;
+    isRelease = true;
+    mode = 2;
+}
 

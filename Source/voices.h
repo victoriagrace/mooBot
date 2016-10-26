@@ -43,34 +43,9 @@ struct MooVoice : public SynthesiserVoice
         return dynamic_cast<MooSound*> (sound) != nullptr;
     }
     
-    void startNote(int midiNoteNumber, float velocity, SynthesiserSound*, int /* pitchwheel */) override
-    {
-        synthControl.setParamValue("/main/gate",1);
-        synthControl.setParamValue("/main/freq",midiNoteNumber);
-        synthControl.setParamValue("/main/vel",velocity);
-        isOn = true;
-        timer = 44100;
-        std::cout << "We are turning shit on!\n";
-        isOn = true;
-        isRelease = false;
-        mode = 1;
-
-    }
+    void startNote(int midiNoteNumber, float velocity, SynthesiserSound*, int /* pitchwheel */) override;
     
-    void stopNote (float/*velocity*/, bool allowTailOff) override
-    {
-        if(!allowTailOff) {
-            return;
-        }
-        synthControl.setParamValue("/main/gate",0.0);
-        //synthControl.setParamValue("/main/vel",0.f);
-        std::cout << "We are turning shit off!\n";
-        //clearCurrentNote();
-        isOn = false;
-        timer = 44100;
-        isRelease = true;
-        mode = 2;
-    }
+    void stopNote (float/*velocity*/, bool allowTailOff) override;
     
     void pitchWheelMoved (int /*newValues*/) override
     {
@@ -86,8 +61,10 @@ struct MooVoice : public SynthesiserVoice
     void init(double samplingRate);
     void compute(int count, FAUSTFLOAT **in, FAUSTFLOAT **out);
     void setCurrentPlaybackSampleRate(double newRate) override;
-    void setCutoff(float cutoff);
-
+    void setVib(float vib);
+    void setFormant(float formant);
+    void setSpeed(float speed);
+    void setEnv(float env);
 private:
     mooSynth faustSynth;
     MapUI synthControl;

@@ -16,17 +16,27 @@
 MoobotAudioProcessor::MoobotAudioProcessor()
 {
     int nVoices = MOO_MAXVOICES;
+    MooVoice *tmp;
     for (int i = nVoices; --i >= 0;)
     {
-        //synth.addVoice (new MooVoice());
-        synth.addVoice (&voice[i]);
+        tmp = new MooVoice();
+        synth.addVoice (tmp);
+        voice[i] = tmp;
+        //synth.addVoice (&voice[i]);
     }
     synth.clearSounds();
     synth.addSound (new MooSound());
+    
+    sp_create(&sp);
+    sp_revsc_create(&reverb);
+    sp_revsc_init(sp, reverb);
+    reverb->feedback = 0.8;
 }
 
 MoobotAudioProcessor::~MoobotAudioProcessor()
 {
+    sp_revsc_destroy(&reverb);
+    sp_destroy(&sp);
 }
 
 //==============================================================================
@@ -168,6 +178,15 @@ void MoobotAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& 
     //voice.compute(numSamples, NULL, audioBuffer);
     
     synth.renderNextBlock (buffer, midiMessages, 0, buffer.getNumSamples());
+    float *bufL = buffer.getWritePointer(0);
+    float *bufR = buffer.getWritePointer(1);
+
+    float revL, revR;
+    for(int samp = 0; samp < buffer.getNumSamples(); samp++) {
+        sp_revsc_compute(sp, reverb, &bufL[samp], &bufR[samp], &revL, &revR);
+        bufL[samp] += revL * 0.2;
+        bufR[samp] += revR * 0.2;
+    }
 }
 
 //==============================================================================
@@ -193,6 +212,11 @@ void MoobotAudioProcessor::setStateInformation (const void* data, int sizeInByte
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+}
+
+void MoobotAudioProcessor::setReverbDecay(float decay)
+{
+    reverb->feedback = decay;
 }
 
 //==============================================================================
