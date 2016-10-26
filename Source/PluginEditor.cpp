@@ -10,7 +10,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-
+#include "mooSynth.h"
 //==============================================================================
 MoobotAudioProcessorEditor::MoobotAudioProcessorEditor (MoobotAudioProcessor& p)
     : AudioProcessorEditor (&p), processor (p)
@@ -18,7 +18,7 @@ MoobotAudioProcessorEditor::MoobotAudioProcessorEditor (MoobotAudioProcessor& p)
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     addAndMakeVisible (slider4 = new Slider ("slider4"));
-    slider4->setRange (0, 10, 0);
+    slider4->setRange (0, 1);
     slider4->setSliderStyle (Slider::LinearBar);
     slider4->setTextBoxStyle (Slider::TextBoxLeft, false, 80, 20);
     slider4->setColour (Slider::backgroundColourId, Colour (0xff000097));
@@ -123,7 +123,9 @@ void MoobotAudioProcessorEditor::paint (Graphics& g)
     g.fillPath (internalPath14);
 }
 
-void MoobotAudioProcessorEditor::resized()
+
+
+    void MoobotAudioProcessorEditor::resized()
 {
     slider4->setBounds (240, 48, 120, 32);
     slider1->setBounds (16, 48, 120, 32);
@@ -241,7 +243,7 @@ void MoobotAudioProcessorEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == slider4)
     {
         //[UserSliderCode_slider4] -- add your slider handling code here..
-        //[/UserSliderCode_slider4]
+        synthControl.setParamValue("/main/formant", slider4->getValue());
     }
     else if (sliderThatWasMoved == slider1)
     {

@@ -13,7 +13,7 @@
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
-
+#include "mooSynth.h"
 
 //==============================================================================
 /**
@@ -37,7 +37,7 @@ public:
     static const int cowNose_paintSize;
     static const char* cowNose_jpg;
     static const int cowNose_jpgSize;
-    
+
 
 private:
     // This reference is provided as a quick way for your editor to
@@ -63,8 +63,9 @@ private:
     Path internalPath13;
     Path internalPath14;
     
+    MapUI synthControl;
 
-
+    mooSynth fSynth;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MoobotAudioProcessorEditor)
 };
 

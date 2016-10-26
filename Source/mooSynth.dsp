@@ -4,9 +4,14 @@ import("filter.lib");
 
 freq=nentry("freq",24,0,127,0.01) :si.smoo;
 vel=nentry("vel",0.5,0,1,0.01) :si.smoo;
+gain = hslider("gain",1,0,1,0.01) :si.smoo;
+
 
 vib=nentry("vib",0.5,0,6,0.01) :si.smoo;
+
 pos= hslider("formant",0,0,1,.01) : si.smoo;
+
+//sinMod = osc(0.5 + 5 * gain) * 0.1 * gain; // for vibrato
 
 sinMod=os.osc(vib);
 gate= checkbox("gate");
@@ -52,11 +57,14 @@ bpfChain=resonbp(f1_freq,f1_bw,f1_amp):
 resonbp(f2_freq,f2_bw,f2_amp):
 resonbp(f3_freq,f3_bw,f3_amp);
 
-freq2=(ba.midikey2hz(freq))+sinMod;
+freq2=(ba.midikey2hz(freq));//+sinMod;
+env = en.smoothEnvelope(1.0, gate);
+//saw = gate:en.adsr(0.3,0.1,0.2,0.4,gate)*(os.saw2(freq2): bpfChain*vel);
+//saw = os.saw2(ba.midikey2hz(freq)) * vel : fi.lowpass(2, 900) * env;
+saw = os.saw2(ba.midikey2hz(freq)) * vel : fi.lowpass(2, 900) * env;
 
-saw = gate:en.adsr(0.3,0.1,0.2,0.4)*(os.saw2(freq2): bpfChain*vel);
-//synth=saw,saw;
-synth = _ + 0.25*saw, _ + 0.25*saw;
+synth=saw,env;
+//synth = _ + saw, _ + saw;
 process=hgroup("main", synth);
 
 

@@ -88,6 +88,7 @@ void MoobotAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock
 {
     
     synth.setCurrentPlaybackSampleRate(sampleRate);
+
 }
 
 void MoobotAudioProcessor::releaseResources()
@@ -167,7 +168,6 @@ void MoobotAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& 
     //voice.compute(numSamples, NULL, audioBuffer);
     
     synth.renderNextBlock (buffer, midiMessages, 0, buffer.getNumSamples());
-
 }
 
 //==============================================================================
@@ -185,7 +185,7 @@ AudioProcessorEditor* MoobotAudioProcessor::createEditor()
 void MoobotAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
     // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
+    // You could do that either as raw fdata, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
 }
 
