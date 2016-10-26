@@ -677,34 +677,25 @@ class mooSynth : public dsp {
 	float 	fConst0;
 	float 	fConst1;
 	float 	fConst2;
+	FAUSTFLOAT 	fentry0;
+	float 	fRec3[2];
+	float 	fRec1[2];
+	FAUSTFLOAT 	fentry1;
+	float 	fRec4[2];
 	float 	fConst3;
+	FAUSTFLOAT 	fslider0;
+	float 	fRec5[2];
+	float 	fRec0[3];
 	float 	fConst4;
 	float 	fConst5;
 	FAUSTFLOAT 	fcheckbox0;
-	float 	fRec0[2];
-	float 	fConst6;
-	float 	fConst7;
-	FAUSTFLOAT 	fentry0;
-	float 	fRec4[2];
-	float 	fRec2[2];
-	FAUSTFLOAT 	fentry1;
-	float 	fRec5[2];
-	float 	fConst8;
-	float 	fConst9;
-	float 	fRec1[3];
+	float 	fRec6[2];
 	int fSamplingFreq;
 
   public:
 	virtual void metadata(Meta* m) { 
-		m->declare("envelope.lib/name", "Faust Envelope Library");
-		m->declare("envelope.lib/version", "0.0");
-		m->declare("envelope.lib/author", "GRAME");
-		m->declare("envelope.lib/copyright", "GRAME");
-		m->declare("envelope.lib/license", "LGPL with exception");
 		m->declare("filter.lib/name", "Faust Filter Library");
 		m->declare("filter.lib/version", "2.0");
-		m->declare("miscoscillator.lib/name", "Faust Oscillator Library");
-		m->declare("miscoscillator.lib/version", "0.0");
 		m->declare("basic.lib/name", "Faust Basic Element Library");
 		m->declare("basic.lib/version", "0.0");
 		m->declare("signal.lib/name", "Faust Signal Routing Library");
@@ -714,6 +705,13 @@ class mooSynth : public dsp {
 		m->declare("math.lib/author", "GRAME");
 		m->declare("math.lib/copyright", "GRAME");
 		m->declare("math.lib/license", "LGPL with exception");
+		m->declare("miscoscillator.lib/name", "Faust Oscillator Library");
+		m->declare("miscoscillator.lib/version", "0.0");
+		m->declare("envelope.lib/name", "Faust Envelope Library");
+		m->declare("envelope.lib/version", "0.0");
+		m->declare("envelope.lib/author", "GRAME");
+		m->declare("envelope.lib/copyright", "GRAME");
+		m->declare("envelope.lib/license", "LGPL with exception");
 	}
 
 	virtual int getNumInputs() { return 0; }
@@ -723,27 +721,25 @@ class mooSynth : public dsp {
 	virtual void instanceConstants(int samplingFreq) {
 		fSamplingFreq = samplingFreq;
 		fConst0 = min(1.92e+05f, max(1.0f, (float)fSamplingFreq));
-		fConst1 = tanf((2827.4333f / fConst0));
+		fConst1 = float(fConst0);
 		fConst2 = (1.0f / fConst1);
-		fConst3 = (1.0f / (((fConst2 + 1.4142135f) / fConst1) + 1));
+		fConst3 = (3.1415927f / fConst0);
 		fConst4 = expf((0 - (1.0f / fConst0)));
 		fConst5 = (1.0f - fConst4);
-		fConst6 = float(fConst0);
-		fConst7 = (1.0f / fConst6);
-		fConst8 = (((fConst2 + -1.4142135f) / fConst1) + 1);
-		fConst9 = (2 * (1 - (1.0f / faustpower<2>(fConst1))));
 	}
 	virtual void instanceResetUserInterface() {
-		fcheckbox0 = 0.0;
 		fentry0 = 24.0f;
 		fentry1 = 0.5f;
+		fslider0 = 1e+03f;
+		fcheckbox0 = 0.0;
 	}
 	virtual void instanceClear() {
-		for (int i=0; i<2; i++) fRec0[i] = 0;
+		for (int i=0; i<2; i++) fRec3[i] = 0;
+		for (int i=0; i<2; i++) fRec1[i] = 0;
 		for (int i=0; i<2; i++) fRec4[i] = 0;
-		for (int i=0; i<2; i++) fRec2[i] = 0;
 		for (int i=0; i<2; i++) fRec5[i] = 0;
-		for (int i=0; i<3; i++) fRec1[i] = 0;
+		for (int i=0; i<3; i++) fRec0[i] = 0;
+		for (int i=0; i<2; i++) fRec6[i] = 0;
 	}
 	virtual void init(int samplingFreq) {
 		classInit(samplingFreq);
@@ -762,36 +758,43 @@ class mooSynth : public dsp {
 	}
 	virtual void buildUserInterface(UI* ui_interface) {
 		ui_interface->openHorizontalBox("main");
+		ui_interface->addHorizontalSlider("cutoff", &fslider0, 1e+03f, 1e+01f, 1e+04f, 1.0f);
 		ui_interface->addNumEntry("freq", &fentry0, 24.0f, 0.0f, 127.0f, 0.01f);
 		ui_interface->addCheckButton("gate", &fcheckbox0);
 		ui_interface->addNumEntry("vel", &fentry1, 0.5f, 0.0f, 1.0f, 0.01f);
 		ui_interface->closeBox();
 	}
 	virtual void compute (int count, FAUSTFLOAT** input, FAUSTFLOAT** output) {
-		float 	fSlow0 = (fConst5 * float(fcheckbox0));
-		float 	fSlow1 = (0.001f * float(fentry0));
-		float 	fSlow2 = (0.001f * float(fentry1));
+		float 	fSlow0 = (0.001f * float(fentry0));
+		float 	fSlow1 = (0.001f * float(fentry1));
+		float 	fSlow2 = (0.001f * float(fslider0));
+		float 	fSlow3 = (fConst5 * float(fcheckbox0));
 		FAUSTFLOAT* output0 = output[0];
 		FAUSTFLOAT* output1 = output[1];
 		for (int i=0; i<count; i++) {
-			fRec0[0] = (fSlow0 + (fConst4 * fRec0[1]));
-			fRec4[0] = (fSlow1 + (0.999f * fRec4[1]));
-			float fTemp0 = float(max(1e-07f, fabsf((4.4e+02f * powf(2.0f,(0.083333336f * (fRec4[0] + -69.0f)))))));
-			float fTemp1 = (fRec2[1] + (fConst7 * fTemp0));
+			fRec3[0] = (fSlow0 + (0.999f * fRec3[1]));
+			float fTemp0 = float(max(1e-07f, fabsf((4.4e+02f * powf(2.0f,(0.083333336f * (fRec3[0] + -69.0f)))))));
+			float fTemp1 = (fRec1[1] + (fConst2 * fTemp0));
 			float fTemp2 = (fTemp1 + -1);
 			int iTemp3 = int((fTemp2 < 0));
-			fRec2[0] = ((iTemp3)?fTemp1:fTemp2);
-			float 	fRec3 = ((iTemp3)?fTemp1:(fTemp1 + ((1 - (fConst6 / fTemp0)) * fTemp2)));
+			fRec1[0] = ((iTemp3)?fTemp1:fTemp2);
+			float 	fRec2 = ((iTemp3)?fTemp1:(fTemp1 + (fTemp2 * (1 - (fConst1 / fTemp0)))));
+			fRec4[0] = (fSlow1 + (0.999f * fRec4[1]));
 			fRec5[0] = (fSlow2 + (0.999f * fRec5[1]));
-			fRec1[0] = ((((2 * fRec3) + -1) * fRec5[0]) - (fConst3 * ((fConst8 * fRec1[2]) + (fConst9 * fRec1[1]))));
-			output0[i] = (FAUSTFLOAT)(fConst3 * (fRec0[0] * (fRec1[0] + (fRec1[2] + (2.0f * fRec1[1])))));
-			output1[i] = (FAUSTFLOAT)fRec0[0];
+			float fTemp4 = tanf((fConst3 * fRec5[0]));
+			float fTemp5 = (1.0f / fTemp4);
+			float fTemp6 = (((fTemp5 + 1.4142135f) / fTemp4) + 1);
+			fRec0[0] = ((((2 * fRec2) + -1) * fRec4[0]) - (((fRec0[2] * (((fTemp5 + -1.4142135f) / fTemp4) + 1)) + (2 * (fRec0[1] * (1 - (1.0f / faustpower<2>(fTemp4)))))) / fTemp6));
+			fRec6[0] = (fSlow3 + (fConst4 * fRec6[1]));
+			output0[i] = (FAUSTFLOAT)((((fRec0[2] + (2.0f * fRec0[1])) + fRec0[0]) * fRec6[0]) / fTemp6);
+			output1[i] = (FAUSTFLOAT)fRec6[0];
 			// post processing
-			fRec1[2] = fRec1[1]; fRec1[1] = fRec1[0];
+			fRec6[1] = fRec6[0];
+			fRec0[2] = fRec0[1]; fRec0[1] = fRec0[0];
 			fRec5[1] = fRec5[0];
-			fRec2[1] = fRec2[0];
 			fRec4[1] = fRec4[0];
-			fRec0[1] = fRec0[0];
+			fRec1[1] = fRec1[0];
+			fRec3[1] = fRec3[0];
 		}
 	}
 };

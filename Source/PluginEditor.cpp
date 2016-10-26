@@ -26,7 +26,7 @@ MoobotAudioProcessorEditor::MoobotAudioProcessorEditor (MoobotAudioProcessor& p)
     slider4->addListener (this);
     
     addAndMakeVisible (slider1 = new Slider ("slider1"));
-    slider1->setRange (0, 10, 0);
+    slider1->setRange (10, 10000, 0);
     slider1->setSliderStyle (Slider::LinearBar);
     slider1->setTextBoxStyle (Slider::TextBoxLeft, false, 80, 20);
     slider1->setColour (Slider::backgroundColourId, Colour (0xff000097));
@@ -57,7 +57,6 @@ MoobotAudioProcessorEditor::MoobotAudioProcessorEditor (MoobotAudioProcessor& p)
     slider3->setColour (Slider::rotarySliderFillColourId, Colour (0xff0d9525));
     slider3->addListener (this);
     
-
     
     setSize (380, 550);
 }
@@ -249,6 +248,9 @@ void MoobotAudioProcessorEditor::sliderValueChanged (Slider* sliderThatWasMoved)
     {
         //[UserSliderCode_slider1] -- add your slider handling code here..
         //[/UserSliderCode_slider1]
+        for(int v = 0; v < MOO_MAXVOICES; v++) {
+            processor.voice[v].setCutoff(slider1->getValue());
+        }
     }
     else if (sliderThatWasMoved == slider5)
     {

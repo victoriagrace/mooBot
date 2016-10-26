@@ -87,5 +87,10 @@ void MooVoice::renderNextBlock (AudioSampleBuffer& outputBuffer, int startSample
 
 }
 
+void MooVoice::setCutoff(float cutoff)
+{
+    synthControl.setParamValue("/main/cutoff",cutoff);
+}
+
 
 

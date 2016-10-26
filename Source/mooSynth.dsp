@@ -61,7 +61,8 @@ freq2=(ba.midikey2hz(freq));//+sinMod;
 env = en.smoothEnvelope(1.0, gate);
 //saw = gate:en.adsr(0.3,0.1,0.2,0.4,gate)*(os.saw2(freq2): bpfChain*vel);
 //saw = os.saw2(ba.midikey2hz(freq)) * vel : fi.lowpass(2, 900) * env;
-saw = os.saw2(ba.midikey2hz(freq)) * vel : fi.lowpass(2, 900) * env;
+cutoff = hslider("cutoff", 1000, 10, 10000, 1) : si.smoo;
+saw = os.saw2(ba.midikey2hz(freq)) * vel : fi.lowpass(2, cutoff) * env;
 
 synth=saw,env;
 //synth = _ + saw, _ + saw;

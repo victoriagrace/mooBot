@@ -58,6 +58,8 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
     
     float noteOnVel;
+    MooVoice voice[MOO_MAXVOICES];
+
 private:
     //==============================================================================
     

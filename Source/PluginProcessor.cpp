@@ -15,12 +15,12 @@
 //==============================================================================
 MoobotAudioProcessor::MoobotAudioProcessor()
 {
-    int nVoices = 4;
+    int nVoices = MOO_MAXVOICES;
     for (int i = nVoices; --i >= 0;)
     {
-        synth.addVoice (new MooVoice());
+        //synth.addVoice (new MooVoice());
+        synth.addVoice (&voice[i]);
     }
-    
     synth.clearSounds();
     synth.addSound (new MooSound());
 }

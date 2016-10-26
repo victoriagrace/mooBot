@@ -17,6 +17,8 @@
 #define FAUSTFLOAT float
 #endif
 
+#define MOO_MAXVOICES 8
+
 struct MooSound : public SynthesiserSound
 {
     MooSound() {}
@@ -84,9 +86,8 @@ struct MooVoice : public SynthesiserVoice
     void init(double samplingRate);
     void compute(int count, FAUSTFLOAT **in, FAUSTFLOAT **out);
     void setCurrentPlaybackSampleRate(double newRate) override;
+    void setCutoff(float cutoff);
 
-    
-    
 private:
     mooSynth faustSynth;
     MapUI synthControl;
