@@ -1,4 +1,4 @@
-# mooBotU
+# mooBot
 
 AU MIDI Controllable Synthesizer Plug-In. Default is in 32 bit but this can be changed in the Juce Projects settings under debug/release.
 
